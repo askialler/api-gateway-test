@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<protocol name="http" version="1.1">
+	<request name="req1">
+		<uri></uri>
+		<method></method>
+		<headers>
+			<header name="name1"></header>
+			<header name="name2"></header>
+			<header name="name3"></header>
+		</headers>
+		<body></body>
+	</request>
+	<request name="req2">
+		<uri></uri>
+		<method></method>
+		<headers>
+			<header name="name1"></header>
+			<header name="name2"></header>
+			<header name="name3"></header>
+		</headers>
+		<body></body>
+	</request>
+	<request name="req3">
+		<uri></uri>
+		<method></method>
+		<headers>
+			<header name="name1"></header>
+			<header name="name2"></header>
+			<header name="name3"></header>
+		</headers>
+		<body></body>
+	</request>
+</protocol>
