@@ -21,6 +21,7 @@ import org.apache.http.message.BasicHeader;
 
 import com.dc.gateway.Resource;
 import com.dc.gateway.User;
+import com.dc.gateway.exceptions.GetUserException;
 import com.dc.gateway.signature.GetSignature;
 
 public class APITest {
@@ -106,6 +107,7 @@ public class APITest {
 
 	/**
 	 * ¼ÆËãÊý×ÖÇ©Ãû
+	 * 
 	 * @param appkey
 	 * @param secretKey
 	 * @param userdate
@@ -137,7 +139,7 @@ public class APITest {
 
 		System.out.println("request address:" + address);
 
-		// prepare  headers
+		// prepare headers
 		List<Header> headers = new ArrayList<Header>();
 		headers.add(new BasicHeader("userId", getUserId()));
 		headers.add(new BasicHeader("user-date", getUserdate()));
@@ -155,9 +157,9 @@ public class APITest {
 
 			HttpEntity entity = resp.getEntity();
 
-//			System.out.println(entity.getContentType().toString());
-//			System.out.println(entity.getContentEncoding());
-//			System.out.println(entity.getContentLength());
+			// System.out.println(entity.getContentType().toString());
+			// System.out.println(entity.getContentEncoding());
+			// System.out.println(entity.getContentLength());
 			System.out.println(resp.getStatusLine().toString());
 
 			System.out.println("http request successful.");
@@ -190,11 +192,22 @@ public class APITest {
 
 		// User user=new User("000001000002265", "2C753112E5B12F3A",
 		// "FcQ6wmOXlG7UUEzrKKBEl6XH9FjmeTGF", "2C753112E5B12F3A");
-		User user = User.getUser("000001000002265", APITest.CLIENT);
-		Resource resource = new Resource("01", "10001");
-		APITest api = new APITest(user, resource, "/chyres01/api1");
+		User user = null;
+		try {
+			user = User.getUser("000001000002321", APITest.CLIENT);
+			Resource resource = new Resource("01", "12001");
+			APITest api = new APITest(user, resource, "/chyres21/api1");
 
-		api.testAPI();
+			api.testAPI();
+//			for (int i = 0; i < 2; i++) {
+//				api.testAPI();
+//			}
+
+		} catch (GetUserException gue) {
+			gue.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 

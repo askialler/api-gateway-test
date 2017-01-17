@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,12 +14,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import com.dc.gateway.exceptions.GetUserException;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
 public class User {
 
 	public static String USER_LINK = "http://mscx-uc-api.eastdc.cn:82/user/info/api/key.do?userId=";
+
 	private String userId;
 
 	/**
@@ -95,15 +99,21 @@ public class User {
 	public User() {
 	}
 
-	public static User getUser(String userId, HttpClient client) {
+	public static User getUser(String userId, HttpClient client) throws GetUserException{
 		String address = USER_LINK + userId;
 		HttpGet get = new HttpGet(address);
 		String result = null;
 		CloseableHttpResponse resp = null;
 		try {
 			resp = (CloseableHttpResponse) client.execute(get);
-			result = EntityUtils.toString(resp.getEntity(), "utf-8");
-			System.out.println(result);
+			String statusLine=resp.getStatusLine().toString();
+			if (resp.getStatusLine().getStatusCode()==HttpStatus.SC_OK) {
+				result = EntityUtils.toString(resp.getEntity(), "utf-8");
+				System.out.println(result);
+			}else{
+				throw new GetUserException("get user failed. http status line: "+ statusLine);
+			}
+
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -121,14 +131,28 @@ public class User {
 		JsonReader reader = new JsonReader(new StringReader(result));
 		try {
 			reader.beginObject();
+			String strCode=null;
+			String msg=null;
 			while (reader.hasNext()) {
+
 				String name = reader.nextName();
-				System.out.println(name + " " + name.length());
+				if(name.equals("code")){
+					strCode= reader.nextString();
+//					System.out.println(strCode);
+				}
+				if(name.equals("message")){
+					msg=reader.nextString();
+//					System.out.println(msg);
+				}
 				if (name.equals("result")) {
+					if(strCode.equals("999999")){
+						reader.close();
+						throw new GetUserException("get user failed,message: "+ msg);
+					}
 					user=gson.fromJson(reader, User.class);
 					break;
 				}
-				reader.nextString();
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -171,7 +195,7 @@ public class User {
 
 	public static void main(String[] args) {
 		HttpClient client = HttpClients.createDefault();
-		User user = getUser("000001000002265", client);
+		User user = getUser("000001000002321", client);
 		System.out.println(user.getApiKey());
 	}
 
