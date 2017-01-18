@@ -29,11 +29,17 @@ public class APITest {
 	private User user;
 	private Resource resource;
 
+//	public static String GW_ADDR = "http://mscx-gateway.hanlnk.com:82/gateway-web-1.8.0";
 	public static String GW_ADDR = "http://api.areacode.com:48011";
-	// public static String GW_ADDR="http://172.16.49.70:8080";
-	// public static String GW_ADDR="http://www.baidu.com";
 
-	public static CloseableHttpClient CLIENT = HttpClients.createDefault();
+	public static CloseableHttpClient client = HttpClients.createDefault();
+	/**
+	 * @return the client
+	 */
+	public static CloseableHttpClient getClient() {
+		return client;
+	}
+
 	private String apiContext = "";
 
 	private String authorization = "";
@@ -149,7 +155,7 @@ public class APITest {
 		CloseableHttpResponse resp = null;
 		try {
 
-			resp = APITest.CLIENT.execute(post);
+			resp = APITest.client.execute(post);
 			// HeaderIterator iter = resp.headerIterator();
 			// while (iter.hasNext()) {
 			// System.out.println(iter.next());
@@ -194,12 +200,12 @@ public class APITest {
 		// "FcQ6wmOXlG7UUEzrKKBEl6XH9FjmeTGF", "2C753112E5B12F3A");
 		User user = null;
 		try {
-			user = User.getUser("000001000002321", APITest.CLIENT);
+			user = User.getUser("440100000002247");
 			Resource resource = new Resource("01", "12001");
 			APITest api = new APITest(user, resource, "/chyres21/api1");
 
 			api.testAPI();
-//			for (int i = 0; i < 2; i++) {
+//			for (int i = 0; i < 18; i++) {
 //				api.testAPI();
 //			}
 

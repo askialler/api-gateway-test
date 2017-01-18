@@ -15,6 +15,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 import com.dc.gateway.exceptions.GetUserException;
+import com.dc.gateway.test.APITest;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
@@ -99,12 +100,13 @@ public class User {
 	public User() {
 	}
 
-	public static User getUser(String userId, HttpClient client) throws GetUserException{
+	public static User getUser(String userId) throws GetUserException{
 		String address = USER_LINK + userId;
 		HttpGet get = new HttpGet(address);
 		String result = null;
 		CloseableHttpResponse resp = null;
 		try {
+			HttpClient client=APITest.getClient();
 			resp = (CloseableHttpResponse) client.execute(get);
 			String statusLine=resp.getStatusLine().toString();
 			if (resp.getStatusLine().getStatusCode()==HttpStatus.SC_OK) {
@@ -194,8 +196,7 @@ public class User {
 	}
 
 	public static void main(String[] args) {
-		HttpClient client = HttpClients.createDefault();
-		User user = getUser("000001000002321", client);
+		User user = getUser("440100000002247");
 		System.out.println(user.getApiKey());
 	}
 
